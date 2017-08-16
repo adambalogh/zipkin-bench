@@ -15,30 +15,38 @@ import java.util.logging.Logger;
 @SpringBootApplication
 @RestController
 public class TracedemoApplication {
-
     private static final Logger LOG = Logger.getLogger(TracedemoApplication.class.getName());
 
-	public static void main(String[] args) {
-		SpringApplication.run(TracedemoApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(TracedemoApplication.class, args);
+    }
 
-    @Autowired
-    private RestTemplate restTemplate;
+    @Autowired private RestTemplate restTemplate;
 
     @Bean
-    public RestTemplate getRestTemplate(){
+    public RestTemplate getRestTemplate() {
         return new RestTemplate();
     }
 
     @RequestMapping("/")
-    public String callHome(){
-        LOG.log(Level.INFO, "calling trace demo backend");
-        return restTemplate.getForObject("http://backend:8090", String.class);
+    public String index() throws InterruptedException {
+        System.out.println("Sleeping " + Thread.currentThread().getId());
+        Thread.sleep(4000);
+        return "Hello World";
+    }
+
+    @RequestMapping("/work")
+    public Trace callHome() {
+        Trace trace = new Trace();
+        trace.add("Frontend at: " + System.currentTimeMillis());
+        trace = restTemplate.postForObject("http://localhost:8090", trace, Trace.class);
+        trace.add("Frontend at: " + System.currentTimeMillis());
+        trace = restTemplate.postForObject("http://localhost:8090", trace, Trace.class);
+        return trace;
     }
 
     @Bean
-    public AlwaysSampler defaultSampler(){
+    public AlwaysSampler defaultSampler() {
         return new AlwaysSampler();
     }
-
 }

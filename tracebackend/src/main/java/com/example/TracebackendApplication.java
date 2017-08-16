@@ -7,6 +7,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,25 +17,23 @@ import java.util.logging.Logger;
 @SpringBootApplication
 @RestController
 public class TracebackendApplication {
+    private static final Logger LOG = Logger.getLogger(TracebackendApplication.class.getName());
 
-	private static final Logger LOG = Logger.getLogger(TracebackendApplication.class.getName());
-
-	public static void main(String[] args) {
-		SpringApplication.run(TracebackendApplication.class, args);
-	}
-
-    @RequestMapping("/")
-    public String home(){
-        LOG.log(Level.INFO, "trace demo backend is being called");
-        return "Hello World.";
+    public static void main(String[] args) {
+        SpringApplication.run(TracebackendApplication.class, args);
     }
 
-    @Autowired
-    private RestTemplate restTemplate;
+    @RequestMapping(value = "/", method = RequestMethod.POST)
+    public Trace home(@RequestBody Trace trace) {
+        LOG.log(Level.INFO, trace.toString());
+        trace.add("Backend at: " + System.currentTimeMillis());
+        return trace;
+    }
+
+    @Autowired private RestTemplate restTemplate;
 
     @Bean
-    public RestTemplate getRestTemplate(){
+    public RestTemplate getRestTemplate() {
         return new RestTemplate();
     }
-
 }

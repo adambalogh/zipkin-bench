@@ -27,8 +27,13 @@ repositories {
 
 
 dependencies {
-	compile('org.springframework.cloud:spring-cloud-starter-sleuth')
-	compile('org.springframework.cloud:spring-cloud-sleuth-zipkin')
+    compile('org.springframework.cloud:spring-cloud-starter-sleuth')
+    compile('org.springframework.cloud:spring-cloud-sleuth-zipkin')
+    compile (
+        [group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.4.1'],
+        [group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.4.1'],
+        [group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.4.1']
+    )
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
